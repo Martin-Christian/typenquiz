@@ -12,12 +12,12 @@ export default function Dashboard() {
   const { data: quizzes, isLoading } = useQuery({
     queryKey: ['quizzes'],
     queryFn: () => base44.entities.Quiz.list('-created_date'),
-    initialData: [],
+    initialData: []
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Quiz.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['quizzes'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['quizzes'] })
   });
 
   return (
@@ -30,8 +30,8 @@ export default function Dashboard() {
               <Sparkles className="w-5 h-5 text-primary" />
               <span className="text-sm font-semibold text-primary uppercase tracking-wider">Personality Quiz</span>
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground leading-tight">
-              Deine Quizze
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground leading-tight">Dein Quiz
+
             </h1>
             <p className="text-muted-foreground mt-2 text-lg">
               Erstelle und verwalte deine Persönlichkeits-Quizze.
@@ -46,15 +46,15 @@ export default function Dashboard() {
         </div>
 
         {/* Loading */}
-        {isLoading && (
-          <div className="flex justify-center py-20">
+        {isLoading &&
+        <div className="flex justify-center py-20">
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
           </div>
-        )}
+        }
 
         {/* Empty state */}
-        {!isLoading && quizzes.length === 0 && (
-          <div className="text-center py-20">
+        {!isLoading && quizzes.length === 0 &&
+        <div className="text-center py-20">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-accent flex items-center justify-center">
               <Sparkles className="w-10 h-10 text-primary" />
             </div>
@@ -67,22 +67,22 @@ export default function Dashboard() {
               </Button>
             </Link>
           </div>
-        )}
+        }
 
         {/* Grid */}
-        {!isLoading && quizzes.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quizzes.map((quiz, idx) => (
-              <QuizCard
-                key={quiz.id}
-                quiz={quiz}
-                index={idx}
-                onDelete={(id) => deleteMutation.mutate(id)}
-              />
-            ))}
+        {!isLoading && quizzes.length > 0 &&
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quizzes.map((quiz, idx) =>
+          <QuizCard
+            key={quiz.id}
+            quiz={quiz}
+            index={idx}
+            onDelete={(id) => deleteMutation.mutate(id)} />
+
+          )}
           </div>
-        )}
+        }
       </div>
-    </div>
-  );
+    </div>);
+
 }
