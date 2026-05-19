@@ -1,0 +1,99 @@
+{
+  "name": "Quiz",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the personality quiz"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description shown on title screen"
+    },
+    "title_image_url": {
+      "type": "string",
+      "description": "Optional background image for title screen"
+    },
+    "personalities": {
+      "type": "array",
+      "description": "List of personality outcomes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "description": "List of quiz questions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "personalities": {
+                  "type": "string",
+                  "description": "Comma-separated personality names"
+                },
+                "image_url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "button_color": {
+      "type": "string",
+      "default": "4D5DAA",
+      "description": "Hex color for button accents"
+    },
+    "progress_color": {
+      "type": "string",
+      "default": "38B755",
+      "description": "Hex color for progress bar"
+    },
+    "result_animation": {
+      "type": "string",
+      "enum": [
+        "none",
+        "fade-in",
+        "wheel"
+      ],
+      "default": "fade-in"
+    },
+    "show_title_screen": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

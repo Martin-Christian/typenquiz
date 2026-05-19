@@ -1,0 +1,22 @@
+{
+  "name": "QuizResult",
+  "type": "object",
+  "properties": {
+    "quiz_id": {
+      "type": "string",
+      "description": "Reference to the Quiz"
+    },
+    "personality_name": {
+      "type": "string",
+      "description": "The resulting personality"
+    },
+    "scores": {
+      "type": "object",
+      "description": "Score breakdown per personality"
+    }
+  },
+  "required": [
+    "quiz_id",
+    "personality_name"
+  ]
+}
