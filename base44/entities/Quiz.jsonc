@@ -44,6 +44,14 @@
           "image_url": {
             "type": "string"
           },
+          "item_id": {
+            "type": "string",
+            "description": "Internal Item ID for admin use"
+          },
+          "facettes": {
+            "type": "string",
+            "description": "Facets for admin use"
+          },
           "answers": {
             "type": "array",
             "items": {
@@ -58,6 +66,10 @@
                 },
                 "image_url": {
                   "type": "string"
+                },
+                "is_correct": {
+                  "type": "boolean",
+                  "description": "Indicates if this is the correct answer (internal, not shown to user)"
                 }
               }
             }
