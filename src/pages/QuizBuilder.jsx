@@ -70,6 +70,7 @@ export default function QuizBuilder() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-6 md:py-10">
+        <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-12 mb-6" />
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
