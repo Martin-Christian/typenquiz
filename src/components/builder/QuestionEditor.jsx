@@ -102,19 +102,51 @@ export default function QuestionEditor({ questions, personalityNames, onChange }
 
             {q.answers?.map((a, aIdx) => (
               <div key={aIdx} className="flex items-start gap-2">
-                <div className="flex-1 space-y-2">
+                <div className="flex-1 space-y-2 border rounded-lg p-3 bg-background">
                   <Input
                     placeholder="Antworttext"
                     value={a.text || ''}
                     onChange={(e) => updateAnswer(qIdx, aIdx, 'text', e.target.value)}
                     className="text-sm"
                   />
-                  <Input
-                    placeholder={`Persönlichkeiten (kommagetrennt, z.B. ${personalityNames.slice(0, 2).join(', ') || 'Name1, Name2'})`}
-                    value={a.personalities || ''}
-                    onChange={(e) => updateAnswer(qIdx, aIdx, 'personalities', e.target.value)}
-                    className="text-sm"
-                  />
+                  {personalityNames.length > 0 ? (
+                    <div>
+                      <span className="text-xs text-muted-foreground mb-1 block">Persönlichkeit:</span>
+                      <div className="flex flex-wrap gap-3">
+                        {personalityNames.map((name) => (
+                          <label key={name} className="flex items-center gap-1.5 cursor-pointer text-sm">
+                            <input
+                              type="radio"
+                              name={`q${qIdx}-a${aIdx}-personality`}
+                              value={name}
+                              checked={a.personalities === name}
+                              onChange={() => updateAnswer(qIdx, aIdx, 'personalities', name)}
+                              className="accent-primary"
+                            />
+                            {name}
+                          </label>
+                        ))}
+                        <label className="flex items-center gap-1.5 cursor-pointer text-sm text-muted-foreground">
+                          <input
+                            type="radio"
+                            name={`q${qIdx}-a${aIdx}-personality`}
+                            value=""
+                            checked={!a.personalities}
+                            onChange={() => updateAnswer(qIdx, aIdx, 'personalities', '')}
+                            className="accent-primary"
+                          />
+                          Keine
+                        </label>
+                      </div>
+                    </div>
+                  ) : (
+                    <Input
+                      placeholder="Persönlichkeiten (kommagetrennt)"
+                      value={a.personalities || ''}
+                      onChange={(e) => updateAnswer(qIdx, aIdx, 'personalities', e.target.value)}
+                      className="text-sm"
+                    />
+                  )}
                 </div>
                 {q.answers.length > 2 && (
                   <Button type="button" variant="ghost" size="icon" onClick={() => removeAnswer(qIdx, aIdx)} className="text-muted-foreground hover:text-destructive mt-1 h-8 w-8">
