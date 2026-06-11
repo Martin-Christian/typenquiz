@@ -62,7 +62,11 @@ export default function ResultScreen({ personality, scores, allPersonalities, on
           transition={{ delay: 0.3 }}
           className="text-lg text-muted-foreground leading-relaxed mb-8 text-center max-w-xl mx-auto"
         >
-          {personality.description}
+          {personality.description.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+            /^https?:\/\//.test(part)
+              ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80 break-all">{part}</a>
+              : part
+          )}
         </motion.p>
       )}
 
