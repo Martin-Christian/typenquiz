@@ -1,31 +1,30 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import AnswerButton from './AnswerButton';
 
-export default function QuestionSlide({ question, questionIndex, onAnswer, accentColor }) {
+export default function QuestionSlide({ question, questionIndex, onAnswer }) {
   return (
     <motion.div
       key={questionIndex}
-      initial={{ opacity: 0, x: 60 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -60 }}
-      transition={{ duration: 0.35 }}
-      className="w-full"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.3 }}
+      className="w-full flex flex-col gap-6"
     >
-      {question.image_url && (
-        <div className="mb-6 rounded-xl overflow-hidden max-h-64">
-          <img
-            src={question.image_url}
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
+      {/* Question box */}
+      <div className="bg-white rounded-2xl shadow-xl px-6 py-6 md:py-8 text-center">
+        {question.image_url && (
+          <div className="mb-4 rounded-xl overflow-hidden max-h-52">
+            <img src={question.image_url} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+        <h2 className="font-heading text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">
+          {question.text}
+        </h2>
+      </div>
 
-      <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-8 leading-tight text-center">
-        {question.text}
-      </h2>
-
+      {/* Answer grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {question.answers?.map((answer, idx) => (
           <AnswerButton
@@ -33,7 +32,6 @@ export default function QuestionSlide({ question, questionIndex, onAnswer, accen
             answer={answer}
             index={idx}
             onSelect={onAnswer}
-            accentColor={accentColor}
           />
         ))}
       </div>

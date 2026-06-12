@@ -117,12 +117,12 @@ export default function QuizPlayer() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(160deg, #46178F 0%, #7B2FBE 60%, #9B59B6 100%)' }}>
       <div className="max-w-2xl mx-auto px-4 py-6 md:py-12">
         <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-12 mb-6" />
         {/* Back link */}
         {phase !== 'result' && (
-          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Zurück
           </Link>
@@ -152,6 +152,7 @@ export default function QuizPlayer() {
               questionIndex={currentQuestion}
               onAnswer={handleAnswer}
               accentColor={quizData.button_color}
+              
             />
           )}
 

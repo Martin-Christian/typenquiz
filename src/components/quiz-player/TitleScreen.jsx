@@ -10,27 +10,42 @@ export default function TitleScreen({ quiz, onStart }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="relative flex flex-col items-center justify-center min-h-[480px] rounded-2xl overflow-hidden"
+      className="relative flex flex-col items-center justify-center min-h-[480px] rounded-3xl overflow-hidden"
+      style={{
+        background: hasImage
+          ? undefined
+          : 'linear-gradient(135deg, #46178F 0%, #7B2FBE 50%, #9B59B6 100%)',
+      }}
     >
       {hasImage && (
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${quiz.title_image_url})` }}
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${quiz.title_image_url})` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/70 via-purple-800/50 to-purple-900/80" />
+        </>
+      )}
+
+      {/* Decorative blobs */}
+      <div className="absolute top-4 left-4 w-24 h-24 rounded-full bg-white/5 blur-xl" />
+      <div className="absolute bottom-8 right-8 w-36 h-36 rounded-full bg-white/5 blur-2xl" />
+
+      <div className="relative z-10 text-center px-8 py-16 max-w-2xl w-full">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="inline-block bg-white/15 backdrop-blur-sm rounded-full px-4 py-1 text-white/80 text-sm font-semibold tracking-widest uppercase mb-5"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
-        </div>
-      )}
+          Persönlichkeits-Quiz
+        </motion.div>
 
-      {!hasImage && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent to-primary/5" />
-      )}
-
-      <div className="relative z-10 text-center px-8 py-16 max-w-2xl">
         <motion.h1
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className={`font-heading text-4xl md:text-5xl font-bold mb-4 leading-tight ${hasImage ? 'text-white' : 'text-foreground'}`}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          className="font-heading text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight drop-shadow-lg"
         >
           {quiz.title}
         </motion.h1>
@@ -40,7 +55,7 @@ export default function TitleScreen({ quiz, onStart }) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.35 }}
-            className={`text-lg mb-10 leading-relaxed ${hasImage ? 'text-white/80' : 'text-muted-foreground'}`}
+            className="text-lg mb-10 leading-relaxed text-white/75"
           >
             {quiz.description}
           </motion.p>
@@ -50,13 +65,13 @@ export default function TitleScreen({ quiz, onStart }) {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.07 }}
+          whileTap={{ scale: 0.96 }}
           onClick={onStart}
-          className="inline-flex items-center gap-3 px-10 py-4 rounded-full bg-primary text-primary-foreground font-semibold text-lg shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-shadow"
+          className="inline-flex items-center gap-3 px-12 py-4 rounded-full bg-white text-purple-800 font-extrabold text-xl shadow-2xl hover:shadow-white/30 transition-shadow"
         >
-          <Play className="w-5 h-5" />
-          Quiz starten
+          <Play className="w-6 h-6 fill-purple-800" />
+          Los geht's!
         </motion.button>
       </div>
     </motion.div>
