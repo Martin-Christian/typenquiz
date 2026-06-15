@@ -118,17 +118,24 @@ export default function QuizPlayer() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(160deg, #46178F 0%, #7B2FBE 60%, #9B59B6 100%)' }}>
-      <div className="max-w-2xl mx-auto px-4 py-6 md:py-12">
-        <div className="inline-block bg-white rounded-xl px-4 py-2 mb-6 shadow-lg">
-          <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-10" />
+      {/* Brand Header */}
+      <div className="bg-white/10 backdrop-blur-sm border-b border-white/10 py-4 px-6">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <img
+            src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png"
+            alt="adFort"
+            className="h-10 brightness-0 invert"
+          />
+          {phase !== 'result' && (
+            <Link to="/" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Zurück
+            </Link>
+          )}
         </div>
-        {/* Back link */}
-        {phase !== 'result' && (
-          <Link to="/" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white mb-6 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Zurück
-          </Link>
-        )}
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-6 md:py-10">
 
         {/* Progress bar */}
         {phase === 'question' && quizData.questions && (
