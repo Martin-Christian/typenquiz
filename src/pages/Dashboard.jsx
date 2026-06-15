@@ -25,18 +25,27 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-5xl mx-auto px-4 py-8 md:py-14">
-        {/* Hero header */}
+      {/* Brand Header */}
+      <div className="bg-gradient-to-r from-[#2d2a7a] to-[#4D5DAA] py-5 px-6 shadow-md">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <img
+            src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png"
+            alt="adFort"
+            className="h-12 brightness-0 invert"
+          />
+          <span className="text-white/70 text-sm font-medium tracking-widest uppercase hidden md:block">Personality Quiz</span>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+        {/* Page header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <div>
-            <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-16 mb-4" />
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-primary" />
               <span className="text-sm font-semibold text-primary uppercase tracking-wider">Personality Quiz</span>
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground leading-tight">Dein Quiz
-
-            </h1>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground leading-tight">Dein Quiz</h1>
             <p className="text-muted-foreground mt-2 text-lg">
               Erstelle und verwalte deine Persönlichkeits-Quizze.
             </p>
