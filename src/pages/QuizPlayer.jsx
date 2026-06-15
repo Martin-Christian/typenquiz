@@ -124,7 +124,7 @@ export default function QuizPlayer() {
           <img
             src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png"
             alt="adFort"
-            className="h-10 brightness-0 invert"
+            className="h-14 brightness-0 invert"
           />
           {phase !== 'result' && (
             <Link to="/" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white transition-colors">
