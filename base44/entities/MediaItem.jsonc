@@ -1,0 +1,17 @@
+{
+  "name": "MediaItem",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "description": "Public URL of the uploaded image"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the image"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}
