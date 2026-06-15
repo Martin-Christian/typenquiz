@@ -31,7 +31,7 @@ export default function Dashboard() {
           <img
             src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png"
             alt="adFort"
-            className="h-16 brightness-0 invert"
+            className="h-32 brightness-0 invert"
           />
           <span className="text-white/70 text-sm font-medium tracking-widest uppercase hidden md:block">Personality Quiz</span>
         </div>
