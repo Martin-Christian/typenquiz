@@ -16,7 +16,10 @@ export default function TitleScreen({ quiz, onStart }) {
       <div className="absolute top-4 left-4 w-24 h-24 rounded-full bg-white/5 blur-xl" />
       <div className="absolute bottom-8 right-8 w-36 h-36 rounded-full bg-white/5 blur-2xl" />
 
-      <div className="relative z-10 text-center px-8 py-16 max-w-2xl w-full">
+      <div className="relative z-10 text-center px-8 py-12 max-w-2xl w-full">
+        <div className="inline-block bg-white rounded-xl px-4 py-2 mb-6 shadow-lg">
+          <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-10" />
+        </div>
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

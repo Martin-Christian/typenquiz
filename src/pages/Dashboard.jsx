@@ -29,7 +29,7 @@ export default function Dashboard() {
         {/* Hero header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <div>
-            <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-20 mb-4" />
+            <img src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png" alt="adFort" className="h-16 mb-4" />
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-primary" />
               <span className="text-sm font-semibold text-primary uppercase tracking-wider">Personality Quiz</span>
