@@ -1,13 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BarChart2, CheckCircle, PlayCircle, Users } from 'lucide-react';
+import { ArrowLeft, BarChart2, CheckCircle, PlayCircle, Users, Download } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Button } from '@/components/ui/button';
 
 const COLORS = ['#4D5DAA', '#7B2FBE', '#38B755', '#E07B39', '#E84393', '#2BB5C8'];
 
+async function downloadXapi(quizId = null) {
+  const res = await base44.functions.invoke('xapiStatements', quizId ? { quiz_id: quizId } : {});
+  const statements = res.data?.statements || [];
+  const blob = new Blob([JSON.stringify(statements, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = quizId ? `xapi-quiz-${quizId}.json` : 'xapi-statements.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function Analytics() {
+  const [downloading, setDownloading] = useState(null);
   const { data: quizzes = [] } = useQuery({
     queryKey: ['quizzes-analytics'],
     queryFn: () => base44.entities.Quiz.list(),
@@ -72,9 +86,20 @@ export default function Analytics() {
           Zurück zum Dashboard
         </Link>
 
-        <div className="flex items-center gap-3 mb-8">
-          <BarChart2 className="w-7 h-7 text-primary" />
-          <h1 className="font-heading text-3xl font-bold">Nutzerverhalten</h1>
+        <div className="flex items-center justify-between gap-3 mb-8">
+          <div className="flex items-center gap-3">
+            <BarChart2 className="w-7 h-7 text-primary" />
+            <h1 className="font-heading text-3xl font-bold">Nutzerverhalten</h1>
+          </div>
+          <Button
+            variant="outline"
+            className="gap-2"
+            disabled={downloading === 'all'}
+            onClick={async () => { setDownloading('all'); await downloadXapi(); setDownloading(null); }}
+          >
+            <Download className="w-4 h-4" />
+            {downloading === 'all' ? 'Wird exportiert…' : 'xAPI exportieren'}
+          </Button>
         </div>
 
         {/* KPI Cards */}
@@ -94,9 +119,21 @@ export default function Analytics() {
               <div key={quiz.id} className="bg-card border rounded-2xl p-6 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
                   <h2 className="font-heading text-xl font-bold">{quiz.title}</h2>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${quiz.is_published ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'}`}>
-                    {quiz.is_published ? 'Veröffentlicht' : 'Entwurf'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${quiz.is_published ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground'}`}>
+                      {quiz.is_published ? 'Veröffentlicht' : 'Entwurf'}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="gap-1 text-xs"
+                      disabled={downloading === quiz.id}
+                      onClick={async () => { setDownloading(quiz.id); await downloadXapi(quiz.id); setDownloading(null); }}
+                    >
+                      <Download className="w-3 h-3" />
+                      {downloading === quiz.id ? '…' : 'xAPI'}
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Stats row */}
