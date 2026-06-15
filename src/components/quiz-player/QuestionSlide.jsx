@@ -14,11 +14,6 @@ export default function QuestionSlide({ question, questionIndex, onAnswer }) {
     >
       {/* Question box */}
       <div className="bg-white rounded-2xl shadow-xl px-6 py-6 md:py-8 text-center">
-        {question.image_url && (
-          <div className="mb-4 rounded-xl overflow-hidden max-h-52">
-            <img src={question.image_url} alt="" className="w-full h-full object-cover" />
-          </div>
-        )}
         <h2 className="font-heading text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">
           {question.text}
         </h2>

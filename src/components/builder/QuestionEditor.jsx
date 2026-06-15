@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, HelpCircle, GripVertical } from 'lucide-react';
+import { Plus, Trash2, HelpCircle, Upload, X, Loader2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function QuestionEditor({ questions, personalityNames, onChange }) {
   const items = questions || [];
+  const [uploading, setUploading] = useState({});
+  const fileInputRefs = useRef({});
+
+  const handleImageUpload = async (qIdx, file) => {
+    if (!file) return;
+    setUploading(prev => ({ ...prev, [qIdx]: true }));
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    updateQuestion(qIdx, 'image_url', file_url);
+    setUploading(prev => ({ ...prev, [qIdx]: false }));
+  };
 
   const addQuestion = () => {
     onChange([...items, { text: '', image_url: '', answers: [{ text: '', personalities: '' }, { text: '', personalities: '' }] }]);
@@ -86,11 +97,43 @@ export default function QuestionEditor({ questions, personalityNames, onChange }
             onChange={(e) => updateQuestion(qIdx, 'text', e.target.value)}
           />
 
-          <Input
-            placeholder="Bild-URL für die Frage (optional)"
-            value={q.image_url || ''}
-            onChange={(e) => updateQuestion(qIdx, 'image_url', e.target.value)}
-          />
+          {/* Image upload for question */}
+          <div>
+            <Label className="text-xs text-muted-foreground mb-1 block">Bild (optional)</Label>
+            {q.image_url ? (
+              <div className="relative inline-block">
+                <img src={q.image_url} alt="" className="h-24 rounded-lg object-cover border" />
+                <button
+                  type="button"
+                  onClick={() => updateQuestion(qIdx, 'image_url', '')}
+                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-white flex items-center justify-center text-xs"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={el => fileInputRefs.current[qIdx] = el}
+                  onChange={(e) => handleImageUpload(qIdx, e.target.files[0])}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={uploading[qIdx]}
+                  onClick={() => fileInputRefs.current[qIdx]?.click()}
+                >
+                  {uploading[qIdx] ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  Bild hochladen
+                </Button>
+              </>
+            )}
+          </div>
 
           <div className="space-y-2 ml-4 border-l-2 border-border pl-4">
             <div className="flex items-center justify-between">

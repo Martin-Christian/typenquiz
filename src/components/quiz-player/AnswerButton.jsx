@@ -22,11 +22,6 @@ export default function AnswerButton({ answer, index, onSelect }) {
       className="relative w-full rounded-2xl text-white font-bold text-lg md:text-xl overflow-hidden shadow-lg"
       style={{ backgroundColor: color.bg, minHeight: '80px' }}
     >
-      {answer.image_url && (
-        <div className="w-full h-28 overflow-hidden">
-          <img src={answer.image_url} alt={answer.text} className="w-full h-full object-cover" />
-        </div>
-      )}
       <div className="flex items-center gap-4 px-5 py-4">
         <span className="flex-shrink-0 text-2xl opacity-90">{color.symbol}</span>
         <span className="leading-snug text-left drop-shadow">{answer.text}</span>

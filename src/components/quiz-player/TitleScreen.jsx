@@ -3,29 +3,14 @@ import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 
 export default function TitleScreen({ quiz, onStart }) {
-  const hasImage = !!quiz.title_image_url;
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="relative flex flex-col items-center justify-center min-h-[480px] rounded-3xl overflow-hidden"
-      style={{
-        background: hasImage
-          ? undefined
-          : 'linear-gradient(135deg, #46178F 0%, #7B2FBE 50%, #9B59B6 100%)',
-      }}
+      style={{ background: 'linear-gradient(135deg, #46178F 0%, #7B2FBE 50%, #9B59B6 100%)' }}
     >
-      {hasImage && (
-        <>
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${quiz.title_image_url})` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/70 via-purple-800/50 to-purple-900/80" />
-        </>
-      )}
 
       {/* Decorative blobs */}
       <div className="absolute top-4 left-4 w-24 h-24 rounded-full bg-white/5 blur-xl" />

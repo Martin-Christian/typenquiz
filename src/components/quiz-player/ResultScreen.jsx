@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 export default function ResultScreen({ personality, scores, allPersonalities, onRetake, animation }) {
   const sortedScores = Object.entries(scores || {}).sort((a, b) => b[1] - a[1]);
   const maxScore = sortedScores.length > 0 ? sortedScores[0][1] : 1;
-  const hasImage = !!personality?.image_url;
 
   const containerVariants = animation === 'fade-in'
     ? { initial: { opacity: 0, y: 40 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
@@ -16,42 +15,20 @@ export default function ResultScreen({ personality, scores, allPersonalities, on
     <motion.div {...containerVariants} className="w-full">
       {/* Result hero */}
       <div className="relative rounded-2xl overflow-hidden mb-8">
-        {hasImage && (
-          <div className="relative h-64 md:h-80">
-            <img
-              src={personality.image_url}
-              alt={personality.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <div className="flex items-center gap-2 mb-2">
-                <Trophy className="w-5 h-5 text-yellow-400" />
-                <span className="text-sm font-medium text-white/80 uppercase tracking-wider">Dein Ergebnis</span>
-              </div>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-white">
-                {personality.name}
-              </h2>
-            </div>
-          </div>
-        )}
-
-        {!hasImage && (
-          <div className="bg-gradient-to-br from-primary/10 via-accent to-primary/5 p-10 text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-              className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center"
-            >
-              <Trophy className="w-10 h-10 text-primary" />
-            </motion.div>
-            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Dein Ergebnis</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2">
-              {personality.name}
-            </h2>
-          </div>
-        )}
+        <div className="bg-gradient-to-br from-primary/10 via-accent to-primary/5 p-10 text-center">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring' }}
+            className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center"
+          >
+            <Trophy className="w-10 h-10 text-primary" />
+          </motion.div>
+          <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Dein Ergebnis</span>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2">
+            {personality.name}
+          </h2>
+        </div>
       </div>
 
       {/* Description */}
