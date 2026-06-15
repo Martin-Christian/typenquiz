@@ -1,0 +1,22 @@
+{
+  "name": "QuizSession",
+  "type": "object",
+  "properties": {
+    "quiz_id": {
+      "type": "string",
+      "description": "Reference to the Quiz"
+    },
+    "quiz_title": {
+      "type": "string",
+      "description": "Title of the quiz at time of start"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the quiz was completed"
+    }
+  },
+  "required": [
+    "quiz_id"
+  ]
+}

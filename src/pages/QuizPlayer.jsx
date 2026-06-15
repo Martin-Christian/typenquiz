@@ -34,7 +34,13 @@ export default function QuizPlayer() {
 
   const handleStart = useCallback(() => {
     setPhase('question');
-  }, []);
+    // Track session start
+    base44.entities.QuizSession.create({
+      quiz_id: quizId,
+      quiz_title: quizData?.title || '',
+      completed: false,
+    }).catch(() => {});
+  }, [quizId, quizData]);
 
   const handleAnswer = useCallback((answer) => {
     if (!quizData) return;
@@ -78,6 +84,13 @@ export default function QuizPlayer() {
           };
           setResultPersonality(personality);
           setPhase('result');
+
+          // Track completion
+          base44.entities.QuizSession.create({
+            quiz_id: quizId,
+            quiz_title: quizData?.title || '',
+            completed: true,
+          }).catch(() => {});
 
           // Save result
           base44.entities.QuizResult.create({

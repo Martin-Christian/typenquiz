@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import QuizBuilder from './pages/QuizBuilder';
 import QuizPlayer from './pages/QuizPlayer';
 import MediaLibrary from './pages/MediaLibrary';
+import Analytics from './pages/Analytics';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
@@ -39,6 +40,7 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Dashboard />} />
       <Route path="/builder" element={user?.role === 'admin' ? <QuizBuilder /> : <Dashboard />} />
       <Route path="/media" element={user?.role === 'admin' ? <MediaLibrary /> : <Dashboard />} />
+      <Route path="/analytics" element={user?.role === 'admin' ? <Analytics /> : <Dashboard />} />
       <Route path="/play" element={<QuizPlayer />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

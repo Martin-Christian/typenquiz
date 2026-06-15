@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, Sparkles, Images } from 'lucide-react';
+import { Plus, Sparkles, Images, BarChart2 } from 'lucide-react';
 import QuizCard from '../components/dashboard/QuizCard';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -52,6 +52,12 @@ export default function Dashboard() {
           </div>
           {isAdmin && (
             <div className="flex items-center gap-2">
+              <Link to="/analytics">
+                <Button size="lg" variant="outline" className="gap-2 rounded-full px-6">
+                  <BarChart2 className="w-5 h-5" />
+                  Analytics
+                </Button>
+              </Link>
               <Link to="/media">
                 <Button size="lg" variant="outline" className="gap-2 rounded-full px-6">
                   <Images className="w-5 h-5" />
