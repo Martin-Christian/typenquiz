@@ -13,10 +13,19 @@ export default function QuestionSlide({ question, questionIndex, onAnswer }) {
       className="w-full flex flex-col gap-6"
     >
       {/* Question box */}
-      <div className="bg-white rounded-2xl shadow-xl px-6 py-6 md:py-8 text-center">
-        <h2 className="font-heading text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">
-          {question.text}
-        </h2>
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden text-center">
+        {question.image_url && (
+          <img
+            src={question.image_url}
+            alt=""
+            className="w-full h-48 md:h-56 object-cover"
+          />
+        )}
+        <div className="px-6 py-6 md:py-8">
+          <h2 className="font-heading text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">
+            {question.text}
+          </h2>
+        </div>
       </div>
 
       {/* Answer grid */}
