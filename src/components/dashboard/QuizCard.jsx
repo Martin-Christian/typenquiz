@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Pencil, Play, Users, HelpCircle, Trash2 } from 'lucide-react';
 
-export default function QuizCard({ quiz, index, onDelete }) {
+export default function QuizCard({ quiz, index, onDelete, isAdmin }) {
   const questionCount = quiz.questions?.length || 0;
   const personalityCount = quiz.personalities?.length || 0;
 
@@ -58,19 +58,23 @@ export default function QuizCard({ quiz, index, onDelete }) {
               <Play className="w-3.5 h-3.5" /> Spielen
             </Button>
           </Link>
-          <Link to={`/builder?id=${quiz.id}`}>
-            <Button variant="outline" size="sm" className="gap-1">
-              <Pencil className="w-3.5 h-3.5" />
-            </Button>
-          </Link>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onDelete(quiz.id)}
-            className="text-muted-foreground hover:text-destructive"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </Button>
+          {isAdmin && (
+            <>
+              <Link to={`/builder?id=${quiz.id}`}>
+                <Button variant="outline" size="sm" className="gap-1">
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDelete(quiz.id)}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </motion.div>

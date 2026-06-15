@@ -10,7 +10,7 @@ import QuizBuilder from './pages/QuizBuilder';
 import QuizPlayer from './pages/QuizPlayer';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -36,7 +36,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/builder" element={<QuizBuilder />} />
+      <Route path="/builder" element={user?.role === 'admin' ? <QuizBuilder /> : <Dashboard />} />
       <Route path="/play" element={<QuizPlayer />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

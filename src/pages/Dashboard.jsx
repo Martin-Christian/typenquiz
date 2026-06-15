@@ -5,9 +5,12 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus, Sparkles } from 'lucide-react';
 import QuizCard from '../components/dashboard/QuizCard';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   const { data: quizzes, isLoading } = useQuery({
     queryKey: ['quizzes'],
@@ -38,12 +41,14 @@ export default function Dashboard() {
               Erstelle und verwalte deine Persönlichkeits-Quizze.
             </p>
           </div>
-          <Link to="/builder">
-            <Button size="lg" className="gap-2 rounded-full px-8 shadow-lg shadow-primary/20">
-              <Plus className="w-5 h-5" />
-              Neues Quiz
-            </Button>
-          </Link>
+          {isAdmin && (
+            <Link to="/builder">
+              <Button size="lg" className="gap-2 rounded-full px-8 shadow-lg shadow-primary/20">
+                <Plus className="w-5 h-5" />
+                Neues Quiz
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Loading */}
@@ -61,12 +66,14 @@ export default function Dashboard() {
             </div>
             <h2 className="font-heading text-2xl font-bold mb-2">Noch keine Quizze</h2>
             <p className="text-muted-foreground mb-6">Erstelle dein erstes Persönlichkeits-Quiz!</p>
-            <Link to="/builder">
-              <Button size="lg" className="gap-2 rounded-full px-8">
-                <Plus className="w-5 h-5" />
-                Quiz erstellen
-              </Button>
-            </Link>
+            {isAdmin && (
+              <Link to="/builder">
+                <Button size="lg" className="gap-2 rounded-full px-8">
+                  <Plus className="w-5 h-5" />
+                  Quiz erstellen
+                </Button>
+              </Link>
+            )}
           </div>
         }
 
@@ -78,6 +85,7 @@ export default function Dashboard() {
             key={quiz.id}
             quiz={quiz}
             index={idx}
+            isAdmin={isAdmin}
             onDelete={(id) => deleteMutation.mutate(id)} />
 
           )}
