@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, HelpCircle } from 'lucide-react';
+import { Plus, Trash2, HelpCircle, CheckCircle2 } from 'lucide-react';
 import MediaPicker from './MediaPicker';
 
 export default function QuestionEditor({ questions, personalityNames, onChange }) {
@@ -106,13 +106,25 @@ export default function QuestionEditor({ questions, personalityNames, onChange }
 
             {q.answers?.map((a, aIdx) => (
               <div key={aIdx} className="flex items-start gap-2">
-                <div className="flex-1 space-y-2 border rounded-lg p-3 bg-background">
-                  <Input
-                    placeholder="Antworttext"
-                    value={a.text || ''}
-                    onChange={(e) => updateAnswer(qIdx, aIdx, 'text', e.target.value)}
-                    className="text-sm"
-                  />
+                <div className={`flex-1 space-y-2 border rounded-lg p-3 bg-background ${a.is_correct ? 'border-emerald-500 bg-emerald-50/40' : ''}`}>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      placeholder="Antworttext"
+                      value={a.text || ''}
+                      onChange={(e) => updateAnswer(qIdx, aIdx, 'text', e.target.value)}
+                      className="text-sm flex-1"
+                    />
+                    <label className="flex items-center gap-1.5 cursor-pointer select-none whitespace-nowrap text-xs font-medium text-muted-foreground hover:text-emerald-600 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={!!a.is_correct}
+                        onChange={(e) => updateAnswer(qIdx, aIdx, 'is_correct', e.target.checked)}
+                        className="accent-emerald-600 w-4 h-4"
+                      />
+                      <CheckCircle2 className={`w-4 h-4 ${a.is_correct ? 'text-emerald-600' : 'text-muted-foreground/50'}`} />
+                      Richtig
+                    </label>
+                  </div>
                   {personalityNames.length > 0 ? (
                     <div>
                       <span className="text-xs text-muted-foreground mb-1 block">Persönlichkeit:</span>
