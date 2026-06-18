@@ -2,10 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const KAHOOT_COLORS = [
-  { bg: '#E21B3C', hover: '#c41836', symbol: '▲' },
-  { bg: '#1368CE', hover: '#0f55a8', symbol: '◆' },
-  { bg: '#FFA602', hover: '#e6950a', symbol: '●' },
-  { bg: '#26890C', hover: '#1d6b09', symbol: '■' },
+  { bg: '#7B2FBE', hover: '#6a28a6', symbol: '◆' },
+  { bg: '#1368CE', hover: '#0f55a8', symbol: '●' },
+  { bg: '#D97706', hover: '#b86005', symbol: '■' },
+  { bg: '#0E7490', hover: '#0a5f75', symbol: '★' },
 ];
 
 export default function AnswerButton({ answer, index, onSelect }) {
