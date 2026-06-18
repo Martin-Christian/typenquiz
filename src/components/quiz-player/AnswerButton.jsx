@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const KAHOOT_COLORS = [
-  { bg: '#7B2FBE', hover: '#6a28a6', symbol: '◆' },
+  { bg: '#A855F7', hover: '#9333ea', symbol: '◆' },
   { bg: '#1368CE', hover: '#0f55a8', symbol: '●' },
   { bg: '#D97706', hover: '#b86005', symbol: '■' },
   { bg: '#0E7490', hover: '#0a5f75', symbol: '★' },
