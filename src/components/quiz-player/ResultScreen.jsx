@@ -1,11 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { RotateCcw, Share2, Trophy } from 'lucide-react';
+import { RotateCcw, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+
+const PIE_COLORS = ['#A855F7', '#1368CE', '#D97706', '#0E7490', '#16A34A', '#DC2626', '#7C3AED', '#0891B2'];
 
 export default function ResultScreen({ personality, scores, allPersonalities, onRetake, animation }) {
   const sortedScores = Object.entries(scores || {}).sort((a, b) => b[1] - a[1]);
-  const maxScore = sortedScores.length > 0 ? sortedScores[0][1] : 1;
+  const total = sortedScores.reduce((sum, [, v]) => sum + v, 0);
+
+  const pieData = sortedScores.map(([name, value]) => ({ name, value }));
+
+  // Find full personality description for the top result
+  const topPersonality = allPersonalities?.find(p => p.name === personality?.name) || personality;
 
   const containerVariants = animation === 'fade-in'
     ? { initial: { opacity: 0, y: 40 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
@@ -31,49 +39,63 @@ export default function ResultScreen({ personality, scores, allPersonalities, on
         </div>
       </div>
 
-      {/* Description */}
-      {personality?.description && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-lg text-muted-foreground leading-relaxed mb-8 text-center max-w-xl mx-auto"
-        >
-          {personality.description.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
-            /^https?:\/\//.test(part)
-              ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80 break-all">{part}</a>
-              : part
-          )}
-        </motion.p>
-      )}
-
-      {/* Score breakdown */}
-      {sortedScores.length > 1 && (
+      {/* Pie Chart */}
+      {pieData.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-card border rounded-xl p-6 mb-8"
+          transition={{ delay: 0.3 }}
+          className="bg-card border rounded-xl p-6 mb-6"
         >
-          <h3 className="font-heading text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+          <h3 className="font-heading text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">
             Auswertung
           </h3>
-          <div className="space-y-3">
-            {sortedScores.map(([name, score], idx) => (
-              <div key={name} className="flex items-center gap-3">
-                <span className="text-sm font-medium text-foreground w-28 truncate">{name}</span>
-                <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(score / maxScore) * 100}%` }}
-                    transition={{ delay: 0.6 + idx * 0.1, duration: 0.5 }}
-                    className={`h-full rounded-full ${idx === 0 ? 'bg-primary' : 'bg-muted-foreground/30'}`}
-                  />
-                </div>
-                <span className="text-sm font-semibold text-foreground w-8 text-right">{score}</span>
-              </div>
-            ))}
-          </div>
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                paddingAngle={3}
+                dataKey="value"
+                animationBegin={300}
+                animationDuration={800}
+              >
+                {pieData.map((entry, idx) => (
+                  <Cell key={entry.name} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value) => [`${Math.round((value / total) * 100)}%`, 'Anteil']}
+              />
+              <Legend
+                formatter={(value) => <span className="text-xs text-foreground">{value}</span>}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </motion.div>
+      )}
+
+      {/* Description of top personality */}
+      {topPersonality?.description && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="bg-card border rounded-xl p-6 mb-6"
+        >
+          <h3 className="font-heading text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            {topPersonality.name}
+          </h3>
+          <p className="text-base text-muted-foreground leading-relaxed">
+            {topPersonality.description.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+              /^https?:\/\//.test(part)
+                ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80 break-all">{part}</a>
+                : part
+            )}
+          </p>
         </motion.div>
       )}
 
