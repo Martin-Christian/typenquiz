@@ -14,6 +14,35 @@
       "type": "boolean",
       "default": false,
       "description": "Whether the quiz was completed"
+    },
+    "question_order": {
+      "type": "array",
+      "description": "Randomized order of question indices",
+      "items": {
+        "type": "number"
+      }
+    },
+    "answers": {
+      "type": "array",
+      "description": "List of answered question indices and chosen answer",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question_index": {
+            "type": "number"
+          },
+          "answer_text": {
+            "type": "string"
+          },
+          "personalities": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "description": "Running score tally per personality"
     }
   },
   "required": [

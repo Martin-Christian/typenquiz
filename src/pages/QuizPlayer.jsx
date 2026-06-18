@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
@@ -9,14 +9,27 @@ import ProgressBar from '../components/quiz-player/ProgressBar';
 import QuestionSlide from '../components/quiz-player/QuestionSlide';
 import ResultScreen from '../components/quiz-player/ResultScreen';
 
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function QuizPlayer() {
   const params = new URLSearchParams(window.location.search);
   const quizId = params.get('id');
 
-  const [phase, setPhase] = useState('loading'); // loading | title | question | result
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [phase, setPhase] = useState('loading');
+  const [sessionId, setSessionId] = useState(null);
+  const [questionOrder, setQuestionOrder] = useState([]); // shuffled indices
+  const [currentStep, setCurrentStep] = useState(0);      // index into questionOrder
   const [scores, setScores] = useState({});
   const [resultPersonality, setResultPersonality] = useState(null);
+  // Guard against duplicate saves
+  const savingRef = useRef(false);
 
   const { data: quiz, isLoading } = useQuery({
     queryKey: ['quiz', quizId],
@@ -26,87 +39,135 @@ export default function QuizPlayer() {
 
   const quizData = quiz?.[0];
 
+  // On load: look for an existing unfinished session for this quiz/user
   useEffect(() => {
-    if (quizData) {
-      setPhase(quizData.show_title_screen !== false ? 'title' : 'question');
-    }
-  }, [quizData]);
+    if (!quizData) return;
 
-  const handleStart = useCallback(() => {
-    setPhase('question');
-    // Track session start
-    base44.entities.QuizSession.create({
+    async function checkExistingSession() {
+      const user = await base44.auth.me().catch(() => null);
+      if (!user) {
+        // Not logged in: just start fresh
+        setPhase(quizData.show_title_screen !== false ? 'title' : 'question');
+        return;
+      }
+
+      const sessions = await base44.entities.QuizSession.filter({
+        quiz_id: quizId,
+        created_by_id: user.id,
+        completed: false,
+      }, '-created_date', 1).catch(() => []);
+
+      const existing = sessions?.[0];
+
+      if (
+        existing &&
+        existing.question_order?.length === quizData.questions?.length &&
+        existing.answers?.length > 0 &&
+        existing.answers.length < quizData.questions.length
+      ) {
+        // Resume session
+        setSessionId(existing.id);
+        setQuestionOrder(existing.question_order);
+        setCurrentStep(existing.answers.length);
+        setScores(existing.scores || {});
+        setPhase('question');
+      } else {
+        setPhase(quizData.show_title_screen !== false ? 'title' : 'question');
+      }
+    }
+
+    checkExistingSession();
+  }, [quizData, quizId]);
+
+  const handleStart = useCallback(async () => {
+    const order = shuffleArray(quizData.questions.map((_, i) => i));
+    setQuestionOrder(order);
+    setCurrentStep(0);
+    setScores({});
+
+    const session = await base44.entities.QuizSession.create({
       quiz_id: quizId,
       quiz_title: quizData?.title || '',
       completed: false,
-    }).catch(() => {});
+      question_order: order,
+      answers: [],
+      scores: {},
+    }).catch(() => null);
+
+    if (session) setSessionId(session.id);
+    setPhase('question');
   }, [quizId, quizData]);
 
-  const handleAnswer = useCallback((answer) => {
-    if (!quizData) return;
+  const handleAnswer = useCallback(async (answer) => {
+    if (!quizData || savingRef.current) return;
 
     const personalityNames = answer.personalities
       ?.split(',')
       .map(p => p.trim())
       .filter(Boolean) || [];
 
-    setScores(prev => {
-      const next = { ...prev };
-      personalityNames.forEach(name => {
-        next[name] = (next[name] || 0) + 1;
-      });
-      return next;
+    const newScores = { ...scores };
+    personalityNames.forEach(name => {
+      newScores[name] = (newScores[name] || 0) + 1;
     });
+    setScores(newScores);
 
-    if (currentQuestion < quizData.questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
-    } else {
-      // Calculate result
-      setTimeout(() => {
-        setScores(prevScores => {
-          const updatedScores = { ...prevScores };
-          personalityNames.forEach(name => {
-            updatedScores[name] = (updatedScores[name] || 0);
-          });
+    const currentQuestionIndex = questionOrder[currentStep];
+    const newAnswers_entry = {
+      question_index: currentQuestionIndex,
+      answer_text: answer.text || '',
+      personalities: answer.personalities || '',
+    };
 
-          let maxScore = 0;
-          let winner = null;
-          Object.entries(updatedScores).forEach(([name, score]) => {
-            if (score > maxScore) {
-              maxScore = score;
-              winner = name;
-            }
-          });
+    const isLast = currentStep >= quizData.questions.length - 1;
 
-          const personality = quizData.personalities?.find(p => p.name === winner) || {
-            name: winner || 'Unbekannt',
-            description: '',
-          };
-          setResultPersonality(personality);
-          setPhase('result');
+    // Persist progress to session
+    if (sessionId) {
+      savingRef.current = true;
+      // Fetch current answers from session to append
+      const sessions = await base44.entities.QuizSession.filter({ id: sessionId }).catch(() => []);
+      const currentSession = sessions?.[0];
+      const prevAnswers = currentSession?.answers || [];
+      const updatedAnswers = [...prevAnswers, newAnswers_entry];
 
-          // Track completion
-          base44.entities.QuizSession.create({
-            quiz_id: quizId,
-            quiz_title: quizData?.title || '',
-            completed: true,
-          }).catch(() => {});
-
-          // Save result
-          base44.entities.QuizResult.create({
-            quiz_id: quizId,
-            personality_name: personality.name,
-            scores: updatedScores,
-          }).catch(() => {});
-
-          return updatedScores;
-        });
-      }, 50);
+      await base44.entities.QuizSession.update(sessionId, {
+        answers: updatedAnswers,
+        scores: newScores,
+        completed: isLast,
+      }).catch(() => {});
+      savingRef.current = false;
     }
-  }, [currentQuestion, quizData, quizId]);
+
+    if (!isLast) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      // Calculate winner
+      let maxScore = 0;
+      let winner = null;
+      Object.entries(newScores).forEach(([name, score]) => {
+        if (score > maxScore) { maxScore = score; winner = name; }
+      });
+
+      const personality = quizData.personalities?.find(p => p.name === winner) || {
+        name: winner || 'Unbekannt',
+        description: '',
+      };
+      setResultPersonality(personality);
+      setPhase('result');
+
+      // Save final result
+      base44.entities.QuizResult.create({
+        quiz_id: quizId,
+        personality_name: personality.name,
+        scores: newScores,
+      }).catch(() => {});
+    }
+  }, [currentStep, questionOrder, scores, quizData, quizId, sessionId]);
 
   const handleRetake = useCallback(() => {
-    setCurrentQuestion(0);
+    setSessionId(null);
+    setQuestionOrder([]);
+    setCurrentStep(0);
     setScores({});
     setResultPersonality(null);
     setPhase(quizData?.show_title_screen !== false ? 'title' : 'question');
@@ -128,6 +189,10 @@ export default function QuizPlayer() {
       </div>
     );
   }
+
+  const currentQuestionData = questionOrder.length > 0
+    ? quizData.questions[questionOrder[currentStep]]
+    : null;
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(160deg, #46178F 0%, #7B2FBE 60%, #9B59B6 100%)' }}>
@@ -154,7 +219,7 @@ export default function QuizPlayer() {
         {phase === 'question' && quizData.questions && (
           <div className="mb-8">
             <ProgressBar
-              current={currentQuestion + 1}
+              current={currentStep + 1}
               total={quizData.questions.length}
               color={quizData.progress_color}
             />
@@ -167,14 +232,13 @@ export default function QuizPlayer() {
             <TitleScreen quiz={quizData} onStart={handleStart} />
           )}
 
-          {phase === 'question' && quizData.questions?.[currentQuestion] && (
+          {phase === 'question' && currentQuestionData && (
             <QuestionSlide
-              key={currentQuestion}
-              question={quizData.questions[currentQuestion]}
-              questionIndex={currentQuestion}
+              key={currentStep}
+              question={currentQuestionData}
+              questionIndex={currentStep}
               onAnswer={handleAnswer}
               accentColor={quizData.button_color}
-              
             />
           )}
 
