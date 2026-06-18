@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Upload, Trash2, Loader2, ImageIcon } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Loader2, ImageIcon, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function MediaLibrary() {
@@ -78,23 +78,35 @@ export default function MediaLibrary() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {media.map((item) => (
-            <div key={item.id} className="group relative rounded-xl overflow-hidden border aspect-square bg-muted">
-              <img src={item.url} alt={item.name || ''} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8"
-                  onClick={() => deleteMutation.mutate(item.id)}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-              {item.name && (
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-2 py-1 text-white text-xs truncate opacity-0 group-hover:opacity-100 transition-opacity">
-                  {item.name}
+            <div key={item.id} className="group relative rounded-xl overflow-hidden border bg-muted flex flex-col">
+              <div className="relative aspect-square">
+                <img src={item.url} alt={item.name || ''} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8"
+                    onClick={() => deleteMutation.mutate(item.id)}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
-              )}
+              </div>
+              <div className="px-2 py-1.5 border-t bg-background space-y-0.5">
+                {item.name && (
+                  <p className="text-xs font-medium truncate text-foreground">{item.name}</p>
+                )}
+                <div className="flex items-center gap-1">
+                  <p className="text-xs text-muted-foreground truncate flex-1">{item.url}</p>
+                  <button
+                    className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+                    title="URL kopieren"
+                    onClick={() => { navigator.clipboard.writeText(item.url); toast.success('URL kopiert'); }}
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
