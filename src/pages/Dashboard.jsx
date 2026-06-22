@@ -31,9 +31,9 @@ export default function Dashboard() {
           <img
             src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/b04321c17_Logovorschlag_adFort1.png"
             alt="adFort"
-            className="h-32"
-          />
-          <span className="text-[#2d2a7a]/70 text-sm font-medium tracking-widest uppercase hidden md:block">Personality Quiz</span>
+            className="h-32" />
+          
+          <span className="text-[#2d2a7a]/70 text-sm font-medium tracking-widest uppercase hidden md:block">AdFort QUIZ</span>
         </div>
       </div>
 
@@ -43,15 +43,15 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              <span className="text-sm font-semibold text-primary uppercase tracking-wider">Personality Quiz</span>
+              <span className="text-sm font-semibold text-primary uppercase tracking-wider">AdFort QUIZ</span>
             </div>
             <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground leading-tight">Dein Quiz</h1>
             <p className="text-muted-foreground mt-2 text-lg">
               Erstelle und verwalte deine Persönlichkeits-Quizze.
             </p>
           </div>
-          {isAdmin && (
-            <div className="flex items-center gap-2">
+          {isAdmin &&
+          <div className="flex items-center gap-2">
               <Link to="/analytics">
                 <Button size="lg" variant="outline" className="gap-2 rounded-full px-6">
                   <BarChart2 className="w-5 h-5" />
@@ -71,7 +71,7 @@ export default function Dashboard() {
                 </Button>
               </Link>
             </div>
-          )}
+          }
         </div>
 
         {/* Loading */}
@@ -89,14 +89,14 @@ export default function Dashboard() {
             </div>
             <h2 className="font-heading text-2xl font-bold mb-2">Noch keine Quizze</h2>
             <p className="text-muted-foreground mb-6">Erstelle dein erstes Persönlichkeits-Quiz!</p>
-            {isAdmin && (
-              <Link to="/builder">
+            {isAdmin &&
+          <Link to="/builder">
                 <Button size="lg" className="gap-2 rounded-full px-8">
                   <Plus className="w-5 h-5" />
                   Quiz erstellen
                 </Button>
               </Link>
-            )}
+          }
           </div>
         }
 
