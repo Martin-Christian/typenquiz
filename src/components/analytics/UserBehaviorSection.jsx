@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, BookOpen, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ChevronDown, BookOpen, User, Download, CheckCircle } from 'lucide-react';
 
 export default function UserBehaviorSection({ quizzes, sessions }) {
   const [codebookQuizId, setCodebookQuizId] = useState(null);
@@ -16,6 +17,7 @@ export default function UserBehaviorSection({ quizzes, sessions }) {
         answers: (q.answers || []).map((a, ai) => ({
           code: `A${ai + 1}`,
           text: a.text || '',
+          is_correct: !!a.is_correct,
         })),
       }));
     });
@@ -28,11 +30,15 @@ export default function UserBehaviorSection({ quizzes, sessions }) {
     const qEntry = book[questionIndex];
     const qCode = qEntry?.code || `Q${(questionIndex ?? 0) + 1}`;
     let aCode = '?';
+    let isCorrect = false;
     if (qEntry) {
       const aIdx = qEntry.answers.findIndex(a => a.text === answerText);
-      if (aIdx >= 0) aCode = qEntry.answers[aIdx].code;
+      if (aIdx >= 0) {
+        aCode = qEntry.answers[aIdx].code;
+        isCorrect = qEntry.answers[aIdx].is_correct;
+      }
     }
-    return { qCode, aCode };
+    return { qCode, aCode, isCorrect };
   }
 
   // Group sessions by anonymized user
@@ -63,14 +69,83 @@ export default function UserBehaviorSection({ quizzes, sessions }) {
 
   const quizzesWithCodebook = quizzes.filter(q => (codebooks[q.id] || []).length > 0);
 
+  const [exporting, setExporting] = useState(false);
+
+  function exportCodedXapi() {
+    setExporting(true);
+    const appBase = 'https://adfort.quiz/';
+    const statements = [];
+
+    const userIds = [...new Set(sessions.map(s => s.created_by_id).filter(Boolean))].sort();
+    const userLabels = {};
+    userIds.forEach((uid, i) => { userLabels[uid] = `Nutzer ${String(i + 1).padStart(2, '0')}`; });
+
+    sessions.forEach(s => {
+      const quiz = quizMap[s.quiz_id];
+      if (!quiz) return;
+      (s.answers || []).forEach(ans => {
+        const { qCode, aCode, isCorrect } = getCodes(s.quiz_id, ans.question_index, ans.answer_text);
+        const qEntry = (codebooks[s.quiz_id] || [])[ans.question_index];
+        statements.push({
+          id: `urn:adfort:answer:${s.id}:${ans.question_index}`,
+          timestamp: s.created_date,
+          actor: {
+            objectType: 'Agent',
+            account: { homePage: appBase, name: userLabels[s.created_by_id] || 'anonymous' },
+          },
+          verb: {
+            id: 'http://adlnet.gov/expapi/verbs/answered',
+            display: { 'de-DE': 'beantwortet' },
+          },
+          object: {
+            objectType: 'Activity',
+            id: `${appBase}quiz/${s.quiz_id}/question/${ans.question_index}`,
+            definition: {
+              type: 'http://adlnet.gov/expapi/activities/cmi.interaction',
+              name: { 'de-DE': `${qCode}: ${qEntry?.text || ''}` },
+            },
+          },
+          result: {
+            response: aCode,
+            success: isCorrect,
+            completion: true,
+          },
+        });
+      });
+    });
+
+    statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    const blob = new Blob([JSON.stringify(statements, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'xapi-coded-responses.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    setExporting(false);
+  }
+
   return (
     <div className="mt-10">
-      <div className="flex items-center gap-3 mb-2">
-        <User className="w-6 h-6 text-primary" />
-        <h2 className="font-heading text-2xl font-bold">Einzelantworten (codiert)</h2>
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <div className="flex items-center gap-3">
+          <User className="w-6 h-6 text-primary" />
+          <h2 className="font-heading text-2xl font-bold">Einzelantworten (codiert)</h2>
+        </div>
+        <Button
+          variant="outline"
+          className="gap-2"
+          disabled={exporting || userGroups.length === 0}
+          onClick={exportCodedXapi}
+        >
+          <Download className="w-4 h-4" />
+          {exporting ? 'Wird exportiert…' : 'xAPI exportieren'}
+        </Button>
       </div>
       <p className="text-sm text-muted-foreground mb-5">
         Fragen und Antworten sind als Q1, A2 etc. codiert, um die Auswertung übersichtlich zu halten.
+        Korrekte Antworten sind <span className="text-green-700 font-medium">grün</span> hervorgehoben.
         Nutzer sind anonymisiert. Klicke auf ein Quiz, um das Codebuch einzusehen.
       </p>
 
@@ -93,8 +168,9 @@ export default function UserBehaviorSection({ quizzes, sessions }) {
                       </p>
                       <div className="ml-4 mt-1 flex flex-wrap gap-x-4 gap-y-1">
                         {q.answers.map(a => (
-                          <span key={a.code} className="text-muted-foreground">
-                            <span className="font-medium text-foreground">{a.code}</span>: {a.text}
+                          <span key={a.code} className={`inline-flex items-center gap-1 ${a.is_correct ? 'text-green-700 font-medium' : 'text-muted-foreground'}`}>
+                            {a.is_correct && <CheckCircle className="w-3 h-3 text-green-600" />}
+                            <span className={a.is_correct ? 'text-green-700' : 'text-foreground'}>{a.code}</span>: {a.text}
                           </span>
                         ))}
                       </div>
@@ -143,12 +219,20 @@ export default function UserBehaviorSection({ quizzes, sessions }) {
                     {sortedAnswers.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {sortedAnswers.map((ans, i) => {
-                          const { qCode, aCode } = getCodes(session.quiz_id, ans.question_index, ans.answer_text);
+                          const { qCode, aCode, isCorrect } = getCodes(session.quiz_id, ans.question_index, ans.answer_text);
                           return (
-                            <span key={i} className="inline-flex items-center gap-1 text-xs font-mono bg-white border px-2 py-1 rounded-md">
-                              <span className="font-bold text-primary">{qCode}</span>
+                            <span
+                              key={i}
+                              className={`inline-flex items-center gap-1 text-xs font-mono px-2 py-1 rounded-md border ${
+                                isCorrect
+                                  ? 'bg-green-50 border-green-300'
+                                  : 'bg-white border-border'
+                              }`}
+                            >
+                              <span className={`font-bold ${isCorrect ? 'text-green-700' : 'text-primary'}`}>{qCode}</span>
                               <span className="text-muted-foreground">→</span>
-                              <span className="font-bold text-foreground">{aCode}</span>
+                              <span className={`font-bold ${isCorrect ? 'text-green-700' : 'text-foreground'}`}>{aCode}</span>
+                              {isCorrect && <CheckCircle className="w-3 h-3 text-green-600" />}
                             </span>
                           );
                         })}
