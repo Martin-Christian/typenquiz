@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, BarChart2, CheckCircle, PlayCircle, Users, Download } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Button } from '@/components/ui/button';
+import UserBehaviorSection from '../components/analytics/UserBehaviorSection';
 
 const COLORS = ['#4D5DAA', '#7B2FBE', '#38B755', '#E07B39', '#E84393', '#2BB5C8'];
 
@@ -173,6 +174,9 @@ export default function Analytics() {
         {quizStats.length === 0 && (
           <div className="text-center py-20 text-muted-foreground">Noch keine Quiz-Daten vorhanden.</div>
         )}
+
+        {/* Coded individual responses per anonymized user */}
+        <UserBehaviorSection quizzes={quizzes} sessions={sessions} />
       </div>
     </div>
   );
