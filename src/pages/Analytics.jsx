@@ -70,7 +70,7 @@ export default function Analytics() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#2d2a7a] to-[#4D5DAA] py-5 px-6 shadow-md">
+      <div className="bg-gradient-to-r from-[#005f8a] to-[#007fb1] py-5 px-6 shadow-md">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <img
             src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/c941e491b_Logovorschlag_adFort.png"

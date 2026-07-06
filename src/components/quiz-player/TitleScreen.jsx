@@ -9,7 +9,7 @@ export default function TitleScreen({ quiz, onStart }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="relative flex flex-col items-center justify-center min-h-[480px] rounded-3xl overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #46178F 0%, #7B2FBE 50%, #9B59B6 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #005f8a 0%, #007fb1 50%, #4da3c4 100%)' }}
     >
 
       {/* Decorative blobs */}
@@ -53,9 +53,9 @@ export default function TitleScreen({ quiz, onStart }) {
           whileHover={{ scale: 1.07 }}
           whileTap={{ scale: 0.96 }}
           onClick={onStart}
-          className="inline-flex items-center gap-3 px-12 py-4 rounded-full bg-white text-purple-800 font-extrabold text-xl shadow-2xl hover:shadow-white/30 transition-shadow"
+          className="inline-flex items-center gap-3 px-12 py-4 rounded-full bg-white text-[#007fb1] font-extrabold text-xl shadow-2xl hover:shadow-white/30 transition-shadow"
         >
-          <Play className="w-6 h-6 fill-purple-800" />
+          <Play className="w-6 h-6 fill-[#007fb1]" />
           Los geht's!
         </motion.button>
       </div>

@@ -195,9 +195,9 @@ export default function QuizPlayer() {
     : null;
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(160deg, #46178F 0%, #7B2FBE 60%, #9B59B6 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(160deg, #005f8a 0%, #007fb1 60%, #4da3c4 100%)' }}>
       {/* Brand Header */}
-      <div className="border-b border-white/10 py-4 px-6" style={{ background: 'linear-gradient(to right, #ffffff 0%, #c8d0e8 40%, #7B2FBE 100%)' }}>
+      <div className="border-b border-white/10 py-4 px-6" style={{ background: 'linear-gradient(to right, #ffffff 0%, #e0eef4 40%, #007fb1 100%)' }}>
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <img
             src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/b04321c17_Logovorschlag_adFort1.png"

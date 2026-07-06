@@ -26,14 +26,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Brand Header */}
-      <div className="py-5 px-6 shadow-md" style={{ background: 'linear-gradient(to right, #ffffff 0%, #c8d0e8 40%, #4D5DAA 100%)' }}>
+      <div className="py-5 px-6 shadow-md" style={{ background: 'linear-gradient(to right, #ffffff 0%, #e0eef4 40%, #007fb1 100%)' }}>
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <img
             src="https://media.base44.com/images/public/6a0c17d634c6c9dc26ecc859/b04321c17_Logovorschlag_adFort1.png"
             alt="adFort"
             className="h-32" />
           
-          <span className="text-[#2d2a7a]/70 text-sm font-medium tracking-widest uppercase hidden md:block">AdFort QUIZ</span>
+          <span className="text-[#007fb1]/70 text-sm font-medium tracking-widest uppercase hidden md:block">AdFort QUIZ</span>
         </div>
       </div>
 
