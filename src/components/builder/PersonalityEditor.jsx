@@ -9,7 +9,7 @@ export default function PersonalityEditor({ personalities, onChange }) {
   const items = personalities || [];
 
   const add = () => {
-    onChange([...items, { name: '', description: '', image_url: '' }]);
+    onChange([...items, { name: '', description: '', image_url: '', result_url: '', result_button_text: '' }]);
   };
 
   const remove = (idx) => {
@@ -65,6 +65,18 @@ export default function PersonalityEditor({ personalities, onChange }) {
             value={p.image_url || ''}
             onChange={(e) => update(idx, 'image_url', e.target.value)}
           />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input
+              placeholder="Button-Text (z.B. Mehr erfahren)"
+              value={p.result_button_text || ''}
+              onChange={(e) => update(idx, 'result_button_text', e.target.value)}
+            />
+            <Input
+              placeholder="URL (z.B. https://...)"
+              value={p.result_url || ''}
+              onChange={(e) => update(idx, 'result_url', e.target.value)}
+            />
+          </div>
         </div>
       ))}
     </div>

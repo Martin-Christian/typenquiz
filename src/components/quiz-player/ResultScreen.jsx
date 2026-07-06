@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { RotateCcw, Trophy } from 'lucide-react';
+import { RotateCcw, Trophy, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -110,6 +110,18 @@ export default function ResultScreen({ personality, scores, allPersonalities, on
           <RotateCcw className="w-4 h-4" />
           Nochmal spielen
         </Button>
+        {topPersonality?.result_url && topPersonality?.result_button_text && (
+          <Button
+            asChild
+            size="lg"
+            className="gap-2 rounded-full px-8"
+          >
+            <a href={topPersonality.result_url} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="w-4 h-4" />
+              {topPersonality.result_button_text}
+            </a>
+          </Button>
+        )}
       </div>
     </motion.div>
   );

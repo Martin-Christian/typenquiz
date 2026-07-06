@@ -28,6 +28,14 @@
           },
           "image_url": {
             "type": "string"
+          },
+          "result_url": {
+            "type": "string",
+            "description": "URL to link to from the result button for this personality"
+          },
+          "result_button_text": {
+            "type": "string",
+            "description": "Button text shown on the result screen for this personality"
           }
         }
       }
