@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const ANSWER_COLORS = [
-  { bg: '#1AB3FF', hover: '#1499D9', symbol: '◆', text: '#ffffff' },
-  { bg: '#CCBD5D', hover: '#A89A4D', symbol: '●', text: '#1a1a1a' },
+  { bg: '#0087CC', hover: '#006FA8', symbol: '◆', text: '#ffffff' },
+  { bg: '#ADAE74', hover: '#8E8F5E', symbol: '●', text: '#1a1a1a' },
   { bg: '#40AADC', hover: '#338BB0', symbol: '■', text: '#ffffff' },
   { bg: '#CCF280', hover: '#AACC66', symbol: '★', text: '#1a1a1a' },
 ];
